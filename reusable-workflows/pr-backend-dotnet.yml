@@ -3,9 +3,20 @@ name: Pre-merge validation - backend - .net
 on:
   workflow_call:
     inputs:
-      dotnet_version:
+      DOCKERFILE_LOCATION:
         required: true
         type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      CREATE_DOCKER:
+        required: false
+        type: boolean
+    secrets:
+      GITHUB_USER:
+        required: true
+      GITHUB_PAT:
+        required: true
 
 jobs:
   PR-validation:
@@ -14,3 +25,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ inputs.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration ${{ inputs.DOTNET_CONFIGURATION }}
+
+      - name: Test
+        run: dotnet test
+
+      - if: ${{ inputs.CREATE_DOCKER == true }}
+        name: Build the Docker image
+        run: docker build . -f ${{ inputs.DOCKERFILE_LOCATION }} -t ${{ inputs.IMAGE_NAME }} --build-arg GITHUB_PAT=${{ secrets.GITHUB_PAT }} --build-arg GITHUB_USER=${{ secrets.GITHUB_USER }}

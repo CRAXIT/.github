@@ -1,0 +1,7 @@
+{
+  "name": "Pre-merge validation backend - .NET",
+  "description": "Template for the pre-merge validation of the backend with .net/docker.",
+  "iconName": "net",
+  "categories": ["Continuous integration", ".net", "docker"],
+  "labels": ["preview"]
+}

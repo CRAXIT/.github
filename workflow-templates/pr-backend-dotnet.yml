@@ -1,0 +1,46 @@
+name: Pre-merge validation - backend - .net
+
+on:
+  # When PR is made to default-branch (e.g. master/main) or change it to the right branch
+  pull_request:
+    branches: [$default-branch]
+  # Call manually the workflow
+  workflow_disGITHUB_PATch:
+
+env:
+  # update the dockerfile location
+  DOCKERFILE_LOCATION: <dockerfile-location>
+  # update the docker image name
+  IMAGE_NAME: <image-name>
+  # update the dotnet version, e.g.: "5.0.x", "6.0.x", "7.0.x"
+  DOTNET_VERSION: "5.0.x"
+  # update dotnet configuration, e.g.: "Debug" or "Release"
+  DOTNET_CONFIGURATION: "Debug"
+  # Should a docker image be built? Default on true.
+  CREATE_DOCKER: true
+
+jobs:
+  PR-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration ${{ env.DOTNET_CONFIGURATION }}
+
+      - name: Test
+        run: dotnet test
+
+      - if: ${{ env.CREATE_DOCKER == true }}
+        name: Build the Docker image
+        run: docker build . -f ${{ env.DOCKERFILE_LOCATION }} -t ${{ env.IMAGE_NAME }} --build-arg GITHUB_PAT=${{ secrets.GITHUB_PAT }} --build-arg GITHUB_USER=${{ secrets.GITHUB_USER }}
