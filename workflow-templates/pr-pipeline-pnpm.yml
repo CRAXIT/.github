@@ -1,7 +1,10 @@
 name: Pre-merge validation - frontend - pnpm
 
 on:
+  # When PR is made to default-branch (e.g. master/main)
   pull_request:
+    branches: [$default-branch]
+  # Call manually the workflow
   workflow_dispatch:
 
 jobs:
