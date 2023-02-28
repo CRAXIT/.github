@@ -49,9 +49,10 @@ jobs:
       - name: Build
         run: dotnet build --configuration ${{ inputs.BUILD_CONFIGURATION }}
 
-      - name: Test
+      - if: ${{ inputs.RUN_TEST == "true" }}
+        name: Test
         run: dotnet test
 
-      - if: ${{ inputs.CREATE_DOCKER == true }}
+      - if: ${{ inputs.CREATE_DOCKER == "true" }}
         name: Build the Docker image
         run: docker build . -f ${{ inputs.DOCKERFILE_LOCATION }} -t ${{ inputs.IMAGE_NAME }} --build-arg GITHUB_PAT=${{ secrets.GITHUB_PAT }} --build-arg GITHUB_USER=${{ secrets.GITHUB_USER }}
