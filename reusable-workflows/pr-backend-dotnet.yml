@@ -9,9 +9,21 @@ on:
       IMAGE_NAME:
         required: true
         type: string
+      BUILD_CONFIGURATION:
+        required: false
+        type: string
+        default: "Debug"
       CREATE_DOCKER:
         required: false
-        type: boolean
+        type: string
+        default: "true"
+      RUN_TEST:
+        required: false
+        type: string
+        default: "true"
+      DOTNET_VERSION:
+        required: true
+        type: string
     secrets:
       GITHUB_USER:
         required: true
@@ -35,7 +47,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration ${{ inputs.DOTNET_CONFIGURATION }}
+        run: dotnet build --configuration ${{ inputs.BUILD_CONFIGURATION }}
 
       - name: Test
         run: dotnet test

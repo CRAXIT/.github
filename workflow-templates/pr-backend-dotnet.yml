@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [$default-branch]
   # Call manually the workflow
-  workflow_disGITHUB_PATch:
+  workflow_dispatch:
 
 env:
   # update the dockerfile location
@@ -15,9 +15,11 @@ env:
   # update the dotnet version, e.g.: "5.0.x", "6.0.x", "7.0.x"
   DOTNET_VERSION: "5.0.x"
   # update dotnet configuration, e.g.: "Debug" or "Release"
-  DOTNET_CONFIGURATION: "Debug"
+  BUILD_CONFIGURATION: "Debug"
   # Should a docker image be built? Default on true.
-  CREATE_DOCKER: true
+  CREATE_DOCKER: "true"
+  # Should tests run? Default on true.
+  RUN_TEST: "true"
 
 jobs:
   PR-validation:
@@ -36,11 +38,12 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration ${{ env.DOTNET_CONFIGURATION }}
+        run: dotnet build --configuration ${{ env.BUILD_CONFIGURATION }}
 
-      - name: Test
+      - if: ${{ env.RUN_TEST == "true" }}
+        name: Test
         run: dotnet test
 
-      - if: ${{ env.CREATE_DOCKER == true }}
+      - if: ${{ env.CREATE_DOCKER == "true" }}
         name: Build the Docker image
         run: docker build . -f ${{ env.DOCKERFILE_LOCATION }} -t ${{ env.IMAGE_NAME }} --build-arg GITHUB_PAT=${{ secrets.GITHUB_PAT }} --build-arg GITHUB_USER=${{ secrets.GITHUB_USER }}
