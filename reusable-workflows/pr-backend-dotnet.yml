@@ -1,0 +1,16 @@
+name: Pre-merge validation - backend - .net
+
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        required: true
+        type: string
+
+jobs:
+  PR-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
