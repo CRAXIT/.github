@@ -1,7 +1,7 @@
 {
-  "name": "Pre-merge validation frontend - Yarn",
-  "description": "Template for the pre-merge validation of the frontend with Yarn.",
+  "name": "Pre-merge validation frontend - yarn",
+  "description": "Template for the pre-merge validation of the frontend with yarn.",
   "iconName": "yarn",
-  "categories": ["Pull request validation", "yarn", "React", "Angular", "JavaScript"],
+  "categories": ["Continuous integration", "Yarn", "React", "Angular", "Vue", "JavaScript"],
   "labels": ["preview"]
 }
