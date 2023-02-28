@@ -1,0 +1,33 @@
+name: Pre-merge validation - frontend - yarn
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        required: true
+        type: string
+
+jobs:
+  PR-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{inputs.tag}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{inputs.tag}}
+
+      - name: Install Yarn
+        run: npm install --global yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run build
+        run: yarn build
+
+      - name: Run the test
+        run: yarn test
